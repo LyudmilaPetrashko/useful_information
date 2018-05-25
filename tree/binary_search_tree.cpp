@@ -12,7 +12,7 @@ struct node{
 struct bst{
     node* root=NULL;    
     
-    bool find_dfs(double r){
+    bool find_dfs(double r){ // поиск в глубину
         node* cur=root;
         while(cur!=NULL){
             if(cur->data==r){return 1;}
@@ -31,15 +31,19 @@ struct bst{
     
     bool find_bfs(double t){ // поиск/обход в ширину
         queue <node*> A;
-        A.push(root);
-        node* temp;
-        while (A.empty()!=1){
-            temp = A.pop();
-            if (temp -> data == t) return 1;
-            if (temp -> left != NULL) A.push(temp -> left);
-            if (temp -> right != NULL) A.push(temp -> right);
+        if(root!=NULL){
+            A.push(root);
+            node* temp;
+            while (!A.empty()){
+                temp = A.front();
+                A.pop();
+                if (temp -> data == t) return 1;
+                if (temp -> left != NULL) A.push(temp -> left);
+                if (temp -> right != NULL) A.push(temp -> right);
+            }
+            return 0;
         }
-        return 0;
+        else{return 0;}
     }
 
     
@@ -137,6 +141,5 @@ int main()
   cout<<endl<<"find_dfs 2: "<<tree.find_dfs(2);
   cout<<endl<<endl<<"find_bfs 1: "<<tree.find_bfs(1);
   cout<<endl<<"find_bfs 2: "<<tree.find_bfs(2);
- 
   return 0;
 }
