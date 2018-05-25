@@ -1,4 +1,5 @@
 #include <iostream>
+#include <queue>
 
 using namespace std;
 
@@ -11,7 +12,7 @@ struct node{
 struct bst{
     node* root=NULL;    
     
-    bool find(double r){
+    bool find_dfs(double r){
         node* cur=root;
         while(cur!=NULL){
             if(cur->data==r){return 1;}
@@ -27,6 +28,20 @@ struct bst{
         return 0;
         }
     
+    
+    bool find_bfs(double t){ // поиск/обход в ширину
+        queue <node*> A;
+        A.push(root);
+        node* temp;
+        while (A.empty()!=1){
+            temp = A.pop();
+            if (temp -> data == t) return 1;
+            if (temp -> left != NULL) A.push(temp -> left);
+            if (temp -> right != NULL) A.push(temp -> right);
+        }
+        return 0;
+    }
+
     
 }; 
 
@@ -63,17 +78,44 @@ struct bst{
         } 
  }
  
- 
-void print(node* x){
-    if(x->left!=NULL){
-        print(x->left);
+
+void pre_order(node* x1){ // префиксный обход
+    
+    cout<<x1->data<<"  ";
+    
+    if(x1->left!=NULL){
+        pre_order(x1->left);
     }
-    cout<<x->data<<endl;
         
-    if(x->right!=NULL){
-        print(x->right);
+    if(x1->right!=NULL){
+        pre_order(x1->right);
     }
 }
+ 
+void in_order(node* x2){ // инфиксный обход
+    if(x2->left!=NULL){
+        in_order(x2->left);
+    }
+    cout<<x2->data<<"  ";
+        
+    if(x2->right!=NULL){
+        in_order(x2->right);
+    }
+}
+
+void post_order(node* x3){ // постфиксный обход
+    if(x3->left!=NULL){
+        post_order(x3->left);
+    }
+        
+    if(x3->right!=NULL){
+        post_order(x3->right);
+    }
+    
+    cout<<x3->data<<"  ";
+}
+
+
 
 
 
@@ -86,9 +128,15 @@ int main()
   push(6, tree.root);
   push(11, tree.root);
   push(11, tree.root);
-  print(tree.root);
-  cout<<endl<<"find 1: "<<tree.find(1);
-  cout<<endl<<"find 2: "<<tree.find(2);
+  pre_order(tree.root);
+  cout<<endl;
+  in_order(tree.root);
+  cout<<endl;
+  post_order(tree.root);
+  cout<<endl<<"find_dfs 1: "<<tree.find_dfs(1);
+  cout<<endl<<"find_dfs 2: "<<tree.find_dfs(2);
+  cout<<endl<<endl<<"find_bfs 1: "<<tree.find_bfs(1);
+  cout<<endl<<"find_bfs 2: "<<tree.find_bfs(2);
  
   return 0;
 }
