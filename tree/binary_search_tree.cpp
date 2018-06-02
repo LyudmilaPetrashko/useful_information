@@ -9,8 +9,90 @@ struct node{
     node* right=NULL;
 };
 
+
+void clear (node* n) {
+        if (n==NULL) {
+            return;
+        }
+        clear (n->left);
+        clear (n->right);
+        delete n;
+    }
+ 
+ 
+ void push(double x, node* &y){
+        if(y==NULL){
+            y=new node();
+            y->data=x;
+            y->left=NULL;
+            y->right=NULL;
+        }
+        else{
+            if(x>=y->data){
+                if(y->right!=NULL){
+                    push(x,y->right);
+                }
+                else{
+                    y->right=new node();
+                    y->right->data=x;
+                    y->right->right=y->right->left=NULL;
+                }
+            }
+            else{
+                if(y->left!=NULL){
+                    push(x,y->left);
+                }
+                else{
+                    y->left=new node();
+                    y->left->data=x;
+                    y->left->right=y->left->left=NULL;
+                }
+            }
+        } 
+ }
+    
+
 struct bst{
-    node* root=NULL;    
+    node* root;    
+    
+    bst(): root(NULL){};//конструктор по умолчанию
+    
+    bst(int data){//конструктор
+        root=new node;
+        root->data=data;
+    }
+    
+    bst (const bst& other){//конструктор копирования
+        node* temp = new node;
+        node* cur = other.root;
+        queue <node*> A;
+        A.push(cur);
+        while (A.empty() == 0){
+            temp = A.front();
+            A.pop();
+            push(temp->data, root);
+            if (temp->left != NULL) A.push(temp->left);
+            if (temp->right != NULL) A.push(temp->right);
+        }
+    }
+    
+    bst& operator=(const bst& tr){// оператор присваивания
+        clear(root);
+        node* temp = new node;
+        node* cur = tr.root;
+        queue <node*> A;
+        A.push(cur);
+        while (A.empty() == 0){
+            temp = A.front();
+            A.pop();
+            push(temp->data, root);
+            if (temp->left != NULL) A.push(temp->left);
+            if (temp->right != NULL) A.push(temp->right);
+        }
+        return *this;
+    }
+        
+        
     
     bool find_dfs(double r){ // поиск в глубину
         node* cur=root;
@@ -45,42 +127,16 @@ struct bst{
         }
         else{return 0;}
     }
+    
+    ~bst(){//деструктор
+        clear(root);
+    }
 
     
 }; 
 
 
 
- void push(double x, node* &y){
-        if(y==NULL){
-            y=new node();
-            y->data=x;
-            y->left=NULL;
-            y->right=NULL;
-        }
-        else{
-            if(x>=y->data){
-                if(y->right!=NULL){
-                    push(x,y->right);
-                }
-                else{
-                    y->right=new node();
-                    y->right->data=x;
-                    y->right->right=y->right->left=NULL;
-                }
-            }
-            else{
-                if(y->left!=NULL){
-                    push(x,y->left);
-                }
-                else{
-                    y->left=new node();
-                    y->left->data=x;
-                    y->left->right=y->left->left=NULL;
-                }
-            }
-        } 
- }
  
 
 void pre_order(node* x1){ // префиксный обход
@@ -125,21 +181,25 @@ void post_order(node* x3){ // постфиксный обход
 
 int main()
 {
-  bst tree;
-  push(9, tree.root);
-  push(1, tree.root);
-  push(10, tree.root);
-  push(6, tree.root);
-  push(11, tree.root);
-  push(11, tree.root);
-  pre_order(tree.root);
-  cout<<endl;
-  in_order(tree.root);
-  cout<<endl;
-  post_order(tree.root);
-  cout<<endl<<"find_dfs 1: "<<tree.find_dfs(1);
-  cout<<endl<<"find_dfs 2: "<<tree.find_dfs(2);
-  cout<<endl<<endl<<"find_bfs 1: "<<tree.find_bfs(1);
-  cout<<endl<<"find_bfs 2: "<<tree.find_bfs(2);
+  bst tree1(9), tree2;
+  push(1, tree1.root);
+  push(10, tree1.root);
+  push(6, tree1.root);
+  push(11, tree1.root);
+  push(11, tree1.root);
+  tree2=tree1;
+  tree2.root->data=0;
+  cout<<"pre order tree1: ";
+  pre_order(tree1.root);
+  cout<<endl<<"pre order tree2: ";
+  pre_order(tree2.root);
+  cout<<endl<<"in order tree1: ";
+  in_order(tree1.root);
+  cout<<endl<<"post order tree1: ";
+  post_order(tree1.root);
+  cout<<endl<<endl<<"find_dfs(1) tree1: "<<tree1.find_dfs(1);
+  cout<<endl<<"find_dfs(2) tree1: "<<tree1.find_dfs(2);
+  cout<<endl<<endl<<"find_bfs(1) tree1: "<<tree1.find_bfs(1);
+  cout<<endl<<"find_bfs(2) tree1: "<<tree1.find_bfs(2);
   return 0;
 }
